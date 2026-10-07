@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tư Vấn & Giải Pháp Bạo Lực Học Đường</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chat-container::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-track { background: #f1f1f1; }
+        .chat-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .chat-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col h-screen overflow-hidden">
+
+    <!-- HEADER -->
+    <header class="bg-indigo-700 text-white shadow-md py-4 px-6 flex justify-between items-center z-10">
+        <div class="flex items-center space-x-3">
+            <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm">
+                <i class="fa-solid fa-shield-heart text-2xl text-indigo-200"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide">AI Trợ Lý Hỗ Trợ Tâm Lý & Học Đường</h1>
+                <p class="text-xs text-indigo-200">Giải pháp phòng, chống và ứng phó với bạo lực học đường</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="openEmergencyModal()" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg shadow transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-phone-volume animate-pulse"></i>
+                <span>Hotline Khẩn Cấp</span>
+            </button>
+            <button onclick="clearChat()" title="Làm mới cuộc trò chuyện" class="bg-indigo-600 hover:bg-indigo-800 text-white p-2 rounded-lg transition">
+                <i class="fa-solid fa-rotate-right text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CHAT INTERFACE -->
+    <main class="flex-1 flex overflow-hidden max-w-6xl w-full mx-auto p-4 gap-4">
+        
+        <!-- SIDEBAR / QUICK TOPICS -->
+        <aside class="w-80 hidden md:flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-4">
+            <div>
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Chủ đề hỗ trợ nhanh</h2>
+                <div class="space-y-2">
+                    <button onclick="sendPresetPrompt('Tôi đang bị bắt nạt học đường hoặc đe dọa, tôi phải làm sao?')" class="w-full text-left p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 text-xs font-medium text-slate-700 transition flex items-center space-x-2.5">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+                        <span>Bị bắt nạt / đe dọa trực tiếp</span>
+                    </button>
+                    <button onclick="sendPresetPrompt('Bị bắt nạt trên mạng xã hội (Cyberbullying) nên xử lý thế nào?')" class="w-full text-left p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 text-xs font-medium text-slate-700 transition flex items-center space-x-2.5">
+                        <i class="fa-solid fa-globe text-blue-500"></i>
+                        <span>Bạo lực mạng (Cyberbullying)</span>
+                    </button>
+                    <button onclick="sendPresetPrompt('Làm sao để tâm sự và tìm sự giúp đỡ từ thầy cô hoặc bố mẹ khi gặp rắc rối?')" class="w-full text-left p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 text-xs font-medium text-slate-700 transition flex items-center space-x-2.5">
+                        <i class="fa-solid fa-user-shield text-emerald-500"></i>
+                        <span>Cách chia sẻ với phụ huynh & nhà trường</span>
+                    </button>
+                    <button onclick="sendPresetPrompt('Gợi ý các kỹ năng tự bảo vệ bản thân và giải quyết xung đột ôn hòa.')" class="w-full text-left p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 text-xs font-medium text-slate-700 transition flex items-center space-x-2.5">
+                        <i class="fa-solid fa-handshake-simple text-indigo-500"></i>
+                        <span>Kỹ năng giải quyết xung đột</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-auto bg-indigo-50 border border-indigo-100 rounded-xl p-3.5 text-xs text-indigo-900">
+                <div class="flex items-center space-x-2 font-semibold mb-1">
+                    <i class="fa-solid fa-circle-info text-indigo-600"></i>
+                    <span>Bảo mật & An toàn</span>
+                </div>
+                <p class="text-indigo-700/80 leading-relaxed">Mọi cuộc trò chuyện tại đây được giữ kín hoàn toàn nhằm bảo vệ quyền riêng tư và sự an toàn tối đa cho bạn.</p>
+            </div>
+        </aside>
+
+        <!-- CHAT AREA -->
+        <section class="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <!-- Messages Container -->
+            <div id="chatContainer" class="flex-1 p-4 md:p-6 chat-container overflow-y-auto space-y-4">
+                <!-- Welcome Message from AI -->
+                <div class="flex items-start space-x-3">
+                    <div class="bg-indigo-600 text-white w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                        <i class="fa-solid fa-robot text-sm"></i>
+                    </div>
+                    <div class="bg-slate-100 rounded-2xl rounded-tl-sm p-4 max-w-xl text-sm leading-relaxed text-slate-700 shadow-sm">
+                        <p class="font-semibold text-indigo-900 mb-1">Xin chào, tôi là trợ lý AI hỗ trợ học đường.</p>
+                        <p>Tôi luôn ở đây để lắng nghe, chia sẻ và cung cấp cho bạn các giải pháp an toàn, bảo mật khi đối mặt với bạo lực học đường, áp lực tâm lý hay những tình huống khó xử. Hãy chia sẻ với tôi những gì bạn đang trải qua nhé!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator (Hidden by default) -->
+            <div id="typingIndicator" class="hidden px-6 py-2 flex items-center space-x-2 text-xs text-slate-400">
+                <div class="bg-indigo-600 text-white w-6 h-6 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-robot text-[10px]"></i>
+                </div>
+                <div class="bg-slate-100 px-3 py-2 rounded-xl flex space-x-1 items-center">
+                    <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></div>
+                    <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                </div>
+            </div>
+
+            <!-- Input Form -->
+            <div class="p-3 md:p-4 border-t border-slate-200 bg-white">
+                <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex items-center space-x-2">
+                    <input 
+                        type="text" 
+                        id="userInput" 
+                        placeholder="Nhập nội dung cần tư vấn hoặc giải pháp..." 
+                        autocomplete="off"
+                        class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition"
+                    >
+                    <button type="submit" id="sendBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl transition flex items-center justify-center shadow-sm">
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- EMERGENCY HOTLINE MODAL -->
+    <div id="emergencyModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-rose-600 flex items-center space-x-2">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <span>Danh Sách Hỗ Trợ Khẩn Cấp</span>
+                </h3>
+                <button onclick="closeEmergencyModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">Nếu bạn hoặc ai đó đang gặp nguy hiểm tức thì, hãy liên hệ ngay các cơ quan chức năng hoặc đường dây nóng sau:</p>
+            <div class="space-y-3">
+                <a href="tel:111" class="flex items-center justify-between p-3 rounded-xl bg-rose-50 border border-rose-100 hover:bg-rose-100 transition">
+                    <div>
+                        <div class="font-bold text-rose-700 text-sm">Tổng đài Quốc gia Bảo vệ Trẻ em</div>
+                        <div class="text-xs text-rose-500">Tư vấn miễn phí 24/7</div>
+                    </div>
+                    <span class="bg-rose-600 text-white font-bold px-3 py-1.5 rounded-lg text-sm">111</span>
+                </a>
+                <a href="tel:113" class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition">
+                    <div>
+                        <div class="font-bold text-slate-800 text-sm">Cảnh sát Phản ứng nhanh</div>
+                        <div class="text-xs text-slate-500">Trường hợp khẩn cấp, bạo lực nguy hiểm</div>
+                    </div>
+                    <span class="bg-slate-800 text-white font-bold px-3 py-1.5 rounded-lg text-sm">113</span>
+                </a>
+            </div>
+            <button onclick="closeEmergencyModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">Đóng</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Khởi tạo lịch sử chat
+        let conversationHistory = [];
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function appendMessage(sender, text) {
+            const isUser = sender === 'user';
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-3 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+            
+            messageDiv.innerHTML = `
+                <div class="${isUser ? 'bg-slate-800' : 'bg-indigo-600'} text-white w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                    <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'} text-sm"></i>
+                </div>
+                <div class="${isUser ? 'bg-indigo-600 text-white rounded-tr-sm' : 'bg-slate-100 text-slate-700 rounded-tl-sm'} rounded-2xl p-4 max-w-xl text-sm leading-relaxed shadow-sm">
+                    <p class="whitespace-pre-wrap">${escapeHtml(text)}</p>
+                </div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function sendPresetPrompt(promptText) {
+            userInput.value = promptText;
+            handleSendMessage(new Event('submit'));
+        }
+
+        async function handleSendMessage(event) {
+            event.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessage('user', text);
+            userInput.value = '';
+            typingIndicator.classList.remove('hidden');
+            scrollToBottom();
+
+            // Gọi AI Tư vấn Thông minh (Mô phỏng tư vấn chuyên sâu hoặc tích hợp API)
+            setTimeout(() => {
+                typingIndicator.classList.add('hidden');
+                const aiResponse = generateAIResponse(text);
+                appendMessage('ai', aiResponse);
+            }, 1000);
+        }
+
+        function generateAIResponse(query) {
+            const q = query.toLowerCase();
+            
+            if (q.includes('bắt nạt') || q.includes('đe dọa') || q.includes('đánh') || q.includes('hành hung')) {
+                return "Đầu tiên, hãy giữ bình tĩnh và đặt sự an toàn của bản thân lên hàng đầu:\n\n" +
+                       "1. **Rời khỏi khu vực nguy hiểm:** Tìm cách di chuyển đến nơi đông người hoặc phòng bảo vệ/phòng giáo viên ngay lập tức.\n" +
+                       "2. **Không đáp trả bằng bạo lực:** Tránh xung đột trực diện có thể làm tình hình tệ hơn.\n" +
+                       "3. **Lưu giữ bằng chứng:** Nếu là bạo lực mạng hoặc có tin nhắn đe dọa, hãy chụp màn hình lại.\n" +
+                       "4. **Báo cáo ngay:** Hãy chia sẻ với người lớn mà bạn tin tưởng nhất (cha mẹ, thầy cô chủ nhiệm, hoặc gọi Tổng đài 111). Bạn không phải chịu đựng điều này một mình!";
+            } else if (q.includes('mạng') || q.includes('online') || q.includes('tin nhắn') || q.includes('chửi') || q.includes('cyberbullying')) {
+                return "Bạo lực mạng (Cyberbullying) có thể gây tổn thương lớn nhưng bạn hoàn toàn có quyền kiểm soát:\n\n" +
+                       "1. **Không trả lời hay đôi co:** Kẻ bắt nạt thường muốn thấy phản ứng tức giận từ bạn.\n" +
+                       "2. **Chặn (Block) và Báo cáo (Report):** Sử dụng tính năng chặn tài khoản trên mạng xã hội.\n" +
+                       "3. **Chụp màn hình làm bằng chứng:** Lưu lại các bình luận, tin nhắn lăng mạ để báo cáo nhà trường hoặc cơ quan chức năng nếu cần thiết.\n" +
+                       "4. **Tâm sự với người thân:** Đừng giữ trong lòng, hãy để gia đình và thầy cô đồng hành cùng bạn.";
+            } else if (q.includes('chia sẻ') || q.includes('thầy cô') || q.includes('bố mẹ') || q.includes('nói với ai')) {
+                return "Việc mở lời với người lớn đôi khi khó khăn, nhưng đây là chìa khóa quan trọng để giải quyết:\n\n" +
+                       "1. **Chọn người bạn tin tưởng nhất:** Có thể là bố mẹ, thầy cô chủ nhiệm, giám thị, hoặc cô giáo tư vấn tâm lý học đường.\n" +
+                       "2. **Chuẩn bị trước:** Bạn có thể viết ra giấy hoặc nhắn tin nếu ngại nói trực tiếp.\n" +
+                       "3. **Nêu rõ vấn đề và cảm xúc:** 'Con/Em đang cảm thấy rất lo lắng/bị đe dọa và cần sự giúp đỡ của thầy cô/bố mẹ.'";
+            } else if (q.includes('kỹ năng') || q.includes('giải quyết') || q.includes('xung đột') || q.includes('tự bảo vệ')) {
+                return "Các kỹ năng phòng ngừa và ứng phó với xung đột:\n\n" +
+                       "• **Giữ khoảng cách và thái độ kiên quyết:** Nói 'Không' một cách dứt khoát và bỏ đi khi thấy dấu hiệu gây hấn.\n" +
+                       "• **Xây dựng mạng lưới bạn bè tốt:** Luôn đi chung với nhóm bạn đáng tin cậy ở những khu vực vắng vẻ.\n" +
+                       "• **Rèn luyện sự tự tin:** Kẻ bắt nạt thường nhắm vào những bạn tỏ ra rụt rè, cô độc.\n" +
+                       "• **Tìm kiếm sự trợ giúp sớm:** Đừng đợi đến khi bạo lực xảy ra mới lên tiếng.";
+            } else {
+                return "Cảm ơn bạn đã chia sẻ. Để giải quyết tình huống này một cách tốt nhất, bạn nên:\n\n" +
+                       "1. Bình tĩnh đánh giá mức độ an toàn hiện tại của mình.\n" +
+                       "2. Chia sẻ cụ thể sự việc với giáo viên chủ nhiệm hoặc chuyên gia tâm lý học đường.\n" +
+                       "3. Gọi ngay **Tổng đài 111** nếu bạn cần sự hỗ trợ khẩn cấp, bảo mật và miễn phí.\n\nBạn có thể kể chi tiết hơn để tôi đưa ra lời khuyên cụ thể hơn không?";
+            }
+        }
+
+        function clearChat() {
+            chatContainer.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <div class="bg-indigo-600 text-white w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                        <i class="fa-solid fa-robot text-sm"></i>
+                    </div>
+                    <div class="bg-slate-100 rounded-2xl rounded-tl-sm p-4 max-w-xl text-sm leading-relaxed text-slate-700 shadow-sm">
+                        <p class="font-semibold text-indigo-900 mb-1">Cuộc trò chuyện đã được làm mới.</p>
+                        <p>Tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy cho tôi biết vấn đề bạn đang gặp phải nhé!</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openEmergencyModal() {
+            document.getElementById('emergencyModal').classList.remove('hidden');
+            document.getElementById('emergencyModal').classList.add('flex');
+        }
+
+        function closeEmergencyModal() {
+            document.getElementById('emergencyModal').classList.remove('flex');
+            document.getElementById('emergencyModal').classList.add('hidden');
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+    </script>
+</body>
+</html>
